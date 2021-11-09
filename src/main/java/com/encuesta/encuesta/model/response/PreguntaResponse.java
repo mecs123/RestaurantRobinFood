@@ -12,7 +12,9 @@ import java.io.Serializable;
 public class PreguntaResponse implements Serializable {
 
     private static final long serialVersionUID = -6261690654201102815L;
-    private int id_pre;
+    private Long   idPregunta;
+    private Long   idEncuesta;
+    private String tipoPregunta;
+    private String nombreEncuesta;
     private String titulo_pregunta;
-    private Long fk_id_encu;
 }

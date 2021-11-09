@@ -1,10 +1,13 @@
 package com.encuesta.encuesta.model.sharedDto;
 
+import com.encuesta.encuesta.entity.PreguntaEntity;
+import com.encuesta.encuesta.entity.RespuestaEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -12,7 +15,13 @@ import java.io.Serializable;
 public class PreguntaDTO implements Serializable {
 
     private static final long serialVersionUID = -6261690654201102815L;
-    private int id_pre;
+    private Long idPregunta;
     private String titulo_pregunta;
-    private Long fk_id_encu;
+    private String tipoPregunta;
+
+    private Long idEncuesta;
+    private String nombreEncuesta;
+    
+    private RespuestaDTO respuestaDTO;
+    private List<RespuestaEntity> respuestaList;
 }

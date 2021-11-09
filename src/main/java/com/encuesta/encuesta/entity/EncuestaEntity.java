@@ -19,6 +19,7 @@ public class EncuestaEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id_encu;
     private String titulo;
+    private String date;
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE,CascadeType.DETACH,CascadeType.REFRESH})
     private List<PreguntaEntity> preguntas;
 }

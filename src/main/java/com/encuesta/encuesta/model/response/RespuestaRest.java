@@ -1,4 +1,4 @@
-package com.encuesta.encuesta.model.request;
+package com.encuesta.encuesta.model.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,10 +9,8 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class PreguntaRequestModel implements Serializable {
+public class RespuestaRest implements Serializable {
     private static final long serialVersionUID = 3855293466684771420L;
-    private Long idEncuesta;
-    private String tipoPregunta;
-    private String titulo_pregunta;
-
+    private int idResp;
+    private String desResp;
 }

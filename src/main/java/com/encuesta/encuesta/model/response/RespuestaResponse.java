@@ -13,5 +13,4 @@ public class RespuestaResponse implements Serializable {
     private static final long serialVersionUID = 3855293466684771420L;
     private int idResp;
     private String desResp;
-    private Long fk_id_encu;
 }

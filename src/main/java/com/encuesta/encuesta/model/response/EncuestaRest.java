@@ -5,18 +5,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class EncuestaResponse implements Serializable {
-
-    private static final long serialVersionUID = -6261690654201102815L;
+public class EncuestaRest {
     private Long id_encu;
-    private String titulo;
+    private String tituloEncuesta;
     private String date;
-    private List<PreguntaEntity> preguntas;
+    private List<PreguntaRest> preguntasList;
 }

@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,10 +17,16 @@ public class PreguntaEntity implements Serializable {
     @Column(name = "IdPre", nullable = false)
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long id_pregunta;
+    private Long idPregunta;
     private String titulo_pregunta;
+    private String tipoPregunta;
+    private boolean tipoPreguntaUp;
+
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE,CascadeType.DETACH,CascadeType.REFRESH})
     @JoinColumn(name = "fk_IdEncu")
     private EncuestaEntity encuesta;
+
+    @OneToMany(mappedBy = "pregunta")
+    private List<RespuestaEntity> respuestaEntities;
 
 }
