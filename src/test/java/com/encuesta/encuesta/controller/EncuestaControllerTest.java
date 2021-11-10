@@ -1,9 +1,8 @@
 package com.encuesta.encuesta.controller;
 
-import com.encuesta.encuesta.Excepciones.ExceptionBuilder;
-import com.encuesta.encuesta.entity.PreguntaEntity;
 import com.encuesta.encuesta.model.request.EncuestaRequestModel;
 import com.encuesta.encuesta.model.request.PreguntaRequestModel;
+import com.encuesta.encuesta.model.request.RespuestaRequestModel;
 import com.encuesta.encuesta.model.sharedDto.EncuestaDTO;
 import com.encuesta.encuesta.model.sharedDto.EncuestaPreguntaDTO;
 import com.encuesta.encuesta.model.sharedDto.PreguntaDTO;
@@ -20,10 +19,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -40,7 +35,8 @@ class EncuestaControllerTest {
 
     private EncuestaDTO returnEncuesta;
     private EncuestaDTO paramEncuestaDto;
-    private EncuestaPreguntaDTO returnPregunta;
+    private EncuestaPreguntaDTO returnEncuPregunta;
+    private PreguntaDTO returnPreguntaDto;
 
     @Test
     public void createEncuesta() throws Exception {
@@ -55,36 +51,10 @@ class EncuestaControllerTest {
                 .andExpect(status().isOk());
     }
 
-
-    @Test
-    void listarEncuesta() throws Exception {
-        returnPregunta = generatePregunta();
-        Mockito.when(encuestaServiceInterface.getEcuestaPregunta(1L)).thenReturn(returnPregunta);
-        mockMvc.perform( MockMvcRequestBuilders
-                .get("/encuesta//listar/{id}", 1)
-                .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk());
-    }
-
-    private EncuestaPreguntaDTO generatePregunta() {
-        EncuestaPreguntaDTO encuestaPreguntaDTO = new EncuestaPreguntaDTO();
-        encuestaPreguntaDTO.setId_encu(1l);
-        encuestaPreguntaDTO.setDate("123232");
-        encuestaPreguntaDTO.setTitulo("as");
-        return encuestaPreguntaDTO;
-    }
-
     @Test
     void createPregunta() throws Exception {
-        PreguntaDTO preguntaDTO = new PreguntaDTO();
-        preguntaDTO.setIdPregunta(1l);
-        preguntaDTO.setTipoPregunta("m");
-        preguntaDTO.setNombreEncuesta("asd");
-        preguntaDTO.setIdEncuesta(1l);
-        preguntaDTO.setRespuestaDTO(new RespuestaDTO(1l,"as"));
-
-        Mockito.when(encuestaServiceInterface.createPregunta(preguntaDTO)).thenReturn(preguntaDTO);
+        returnPreguntaDto = generatePreguntaDto();
+        Mockito.when(encuestaServiceInterface.createPregunta(returnPreguntaDto)).thenReturn(returnPreguntaDto);
         mockMvc.perform( MockMvcRequestBuilders
                 .post("/encuesta/CreatePregunta")
                 .content(asJsonString(new PreguntaRequestModel(1l,"mul","asd")))
@@ -93,8 +63,48 @@ class EncuestaControllerTest {
                 .andExpect(status().isOk());
     }
 
+
     @Test
-    void createRespuesta() {
+    void createRespuesta() throws Exception {
+        RespuestaDTO respuestaDTO = new RespuestaDTO();
+        respuestaDTO.setIdPregunta(1l);
+        respuestaDTO.setDesRespuesta("Prueba");
+        Mockito.when(encuestaServiceInterface.createRespuesta(respuestaDTO)).thenReturn(respuestaDTO);
+        mockMvc.perform( MockMvcRequestBuilders
+                .post("/encuesta/respuesta")
+                .content(asJsonString(new RespuestaRequestModel(1l,"Prueba")))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void listarEncuesta() throws Exception {
+        returnEncuPregunta = generateEncuestPregunta();
+        Mockito.when(encuestaServiceInterface.getEcuestaPregunta(1L)).thenReturn(returnEncuPregunta);
+        mockMvc.perform( MockMvcRequestBuilders
+                .get("/encuesta//listar/{id}", 1)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    private PreguntaDTO generatePreguntaDto() {
+        PreguntaDTO preguntaDTO = new PreguntaDTO();
+        preguntaDTO.setIdPregunta(1l);
+        preguntaDTO.setTipoPregunta("m");
+        preguntaDTO.setNombreEncuesta("asd");
+        preguntaDTO.setIdEncuesta(1l);
+        preguntaDTO.setRespuestaDTO(new RespuestaDTO(1l,"as"));
+        return preguntaDTO;
+    }
+
+    private EncuestaPreguntaDTO generateEncuestPregunta() {
+        EncuestaPreguntaDTO encuestaPreguntaDTO = new EncuestaPreguntaDTO();
+        encuestaPreguntaDTO.setId_encu(1l);
+        encuestaPreguntaDTO.setDate("123232");
+        encuestaPreguntaDTO.setTitulo("as");
+        return encuestaPreguntaDTO;
     }
 
     private EncuestaDTO generateEncuesta() {

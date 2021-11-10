@@ -1,7 +1,6 @@
 package com.encuesta.encuesta.controller;
 
 import com.encuesta.encuesta.Excepciones.ExceptionBuilder;
-import com.encuesta.encuesta.entity.PreguntaEntity;
 import com.encuesta.encuesta.model.request.EncuestaRequestModel;
 import com.encuesta.encuesta.model.request.PreguntaRequestModel;
 import com.encuesta.encuesta.model.request.RespuestaRequestModel;

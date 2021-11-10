@@ -38,14 +38,15 @@ public class EncuestaService implements EncuestaServiceInterface{
 
     @Override
     public EncuestaDTO createEncuesta(EncuestaDTO encuestaDTO) throws ExceptionBuilder {
+
         try {
             DateTimeFormatter dtf4 = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm");
             EncuestaEntity encuestaEntity = new EncuestaEntity();
             encuestaEntity.setTitulo(encuestaDTO.getTitulo());
             encuestaEntity.setDate(dtf4.format(LocalDateTime.now()));
-            EncuestaEntity createEncuestaObj =  encuestaRepository.save(encuestaEntity);
-            BeanUtils.copyProperties(createEncuestaObj,encuestaDTO);
-            return encuestaDTO;
+            EncuestaEntity encuestaEntity1 = encuestaRepository.save(encuestaEntity);
+            EncuestaDTO createEncuestaObj = modelMapper.map(encuestaEntity1,EncuestaDTO.class);
+            return createEncuestaObj;
         } catch (IllegalArgumentException i){
             throw new ExceptionBuilder("No se creo ninguna encuesta",i.getMessage());
         } catch (Exception e){
@@ -115,11 +116,11 @@ public class EncuestaService implements EncuestaServiceInterface{
             if (encuestaId != null){
                 EncuestaPreguntaDTO encuestaDTO = new EncuestaPreguntaDTO();
                 Optional<EncuestaEntity> findEncuestaObj = encuestaRepository.findById(id);
-                encuestaDTO.setPreguntas(preguntaRepository.getPreguntaId(id));
                 encuestaDTO.setTitulo(findEncuestaObj.get().getTitulo());
                 encuestaDTO.setId_encu(findEncuestaObj.get().getId_encu());
                 encuestaDTO.setDate(findEncuestaObj.get().getDate());
                 encuestaDTO.setId_encu(findEncuestaObj.get().getId_encu());
+                encuestaDTO.setPreguntas(preguntaRepository.getPreguntaId(id));
                 return encuestaDTO;
             }else {
                 throw new ExceptionBuilder("Not Found","Verifique id ingresado");
