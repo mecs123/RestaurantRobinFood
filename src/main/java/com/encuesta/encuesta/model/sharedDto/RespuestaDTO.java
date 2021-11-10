@@ -11,6 +11,11 @@ import java.io.Serializable;
 @Data
 public class RespuestaDTO implements Serializable {
     private static final long serialVersionUID = 3855293466684771420L;
+    private Long idEncuesta;
     private Long idPregunta;
     private String desRespuesta;
+
+    public RespuestaDTO(long l, String as) {
+
+    }
 }

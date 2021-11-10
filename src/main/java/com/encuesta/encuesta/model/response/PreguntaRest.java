@@ -14,6 +14,7 @@ public class PreguntaRest implements Serializable {
 
     private static final long serialVersionUID = -6261690654201102815L;
     private String titulo_pregunta;
+    private String tipoPregunta;
     private List<RespuestaRest> respuesta;
 
 

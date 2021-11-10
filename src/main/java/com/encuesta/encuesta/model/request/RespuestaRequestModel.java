@@ -11,6 +11,11 @@ import java.io.Serializable;
 @Data
 public class RespuestaRequestModel implements Serializable {
     private static final long serialVersionUID = 3855293466684771420L;
+    private Long idEncuesta;
     private Long idPregunta;
     private String desRespuesta;
+
+    public RespuestaRequestModel(long l, String prueba) {
+
+    }
 }

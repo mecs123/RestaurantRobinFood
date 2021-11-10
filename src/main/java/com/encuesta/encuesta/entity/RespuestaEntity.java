@@ -28,7 +28,7 @@ public class RespuestaEntity implements Serializable {
 
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE,CascadeType.DETACH,CascadeType.REFRESH})
-    @JoinColumn(name = "fk_tipoPregunta")
+    @JoinColumn(name = "fk_idEncuesta")
     private EncuestaEntity encuesta;
 
 

@@ -38,14 +38,15 @@ public class EncuestaService implements EncuestaServiceInterface{
 
     @Override
     public EncuestaDTO createEncuesta(EncuestaDTO encuestaDTO) throws ExceptionBuilder {
+
         try {
             DateTimeFormatter dtf4 = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm");
             EncuestaEntity encuestaEntity = new EncuestaEntity();
             encuestaEntity.setTitulo(encuestaDTO.getTitulo());
             encuestaEntity.setDate(dtf4.format(LocalDateTime.now()));
-            EncuestaEntity createEncuestaObj =  encuestaRepository.save(encuestaEntity);
-            BeanUtils.copyProperties(createEncuestaObj,encuestaDTO);
-            return encuestaDTO;
+            EncuestaEntity encuestaEntity1 = encuestaRepository.save(encuestaEntity);
+            EncuestaDTO createEncuestaObj = modelMapper.map(encuestaEntity1,EncuestaDTO.class);
+            return createEncuestaObj;
         } catch (IllegalArgumentException i){
             throw new ExceptionBuilder("No se creo ninguna encuesta",i.getMessage());
         } catch (Exception e){
@@ -55,26 +56,28 @@ public class EncuestaService implements EncuestaServiceInterface{
 
     @Override
     public PreguntaDTO createPregunta(PreguntaDTO dtoPregunta) throws ExceptionBuilder {
+        // 1. Valida la encuesta
+        // Si existe la encuesta guarda la encuesta asociando el id de la pregunta.
+
+        ///Pasa del DTO al Entity
         PreguntaEntity preguntaEntity = new PreguntaEntity();
         preguntaEntity.setTitulo_pregunta(dtoPregunta.getTitulo_pregunta());
         preguntaEntity.setTipoPregunta(dtoPregunta.getTipoPregunta());
         try {
-            preguntaEntity.setEncuesta(encuestaRepository.getEncuestaId(dtoPregunta.getIdEncuesta()));
             Optional<EncuestaEntity> findEncuestaObj = encuestaRepository.findById(dtoPregunta.getIdEncuesta());
 
             if (findEncuestaObj.isPresent()){
+                // Se guarda encuesta asociada a la pregunta
+                preguntaEntity.setEncuesta(encuestaRepository.getEncuestaId(dtoPregunta.getIdEncuesta()));
                 //Guarda pregunta
                 preguntaRepository.save(preguntaEntity);
                 //Se ubica en la pregunta creada
                 PreguntaEntity preguntaAll = preguntaRepository.findByIdPregunta(preguntaEntity.getIdPregunta());
+                //Retorna al DTO
                 //Obtiene datos de la pregunta asociada a la encuesta
-                dtoPregunta.setIdPregunta(preguntaAll.getIdPregunta());
-                dtoPregunta.setIdEncuesta(findEncuestaObj.get().getId_encu());
-                dtoPregunta.setTipoPregunta(preguntaAll.getTipoPregunta());
-                dtoPregunta.setNombreEncuesta(findEncuestaObj.get().getTitulo());
-
+                modelMapper.map(preguntaEntity, PreguntaDTO.class);
             }else{
-                System.out.printf("No city found with id %d%n");
+                System.out.printf("No existe encuesta");
             }
             return dtoPregunta;
         } catch (IllegalArgumentException e) {
@@ -82,28 +85,34 @@ public class EncuestaService implements EncuestaServiceInterface{
         } catch (Exception e){
             throw new ExceptionBuilder("Error para crear pregunta",e.getMessage());
         }
-
     }
 
     @Override
     public RespuestaDTO createRespuesta(RespuestaDTO dtoRespuesta) throws ExceptionBuilder {
+        //Valida la encuesta y la pregunta para asignar respuesta
         try {
-            PreguntaEntity byIdPregunta = preguntaRepository.findByIdPregunta(dtoRespuesta.getIdPregunta());
-            if ( byIdPregunta != null){
-                try {
-                    RespuestaEntity respuestaEntity = new RespuestaEntity();
-                    respuestaEntity.setDesResp(dtoRespuesta.getDesRespuesta());
-                    respuestaEntity.setPregunta(byIdPregunta);
-                    RespuestaEntity createRespuestObj = respuestaRepository.save(respuestaEntity);
-                    BeanUtils.copyProperties(createRespuestObj,dtoRespuesta);
-                }catch (Exception e){
-                    throw new ExceptionBuilder("Error para crear pregunta",e.getMessage());
+            Optional<EncuestaEntity> byIdEncuesta = encuestaRepository.findById(dtoRespuesta.getIdEncuesta());
+            if (byIdEncuesta.isPresent()){
+                PreguntaEntity byIdPregunta = preguntaRepository.findByIdPregunta(dtoRespuesta.getIdPregunta());
+                if ( byIdPregunta != null){
+                    try {
+                        RespuestaEntity respuestaEntity = new RespuestaEntity();
+                        respuestaEntity.setDesResp(dtoRespuesta.getDesRespuesta());
+                        respuestaEntity.setPregunta(byIdPregunta);
+                        respuestaEntity.setEncuesta(byIdEncuesta.get());
+                        RespuestaEntity createRespectObj = respuestaRepository.save(respuestaEntity);
+                        modelMapper.map(createRespectObj,RespuestaDTO.class);
+                    }catch (Exception e){
+                        throw new ExceptionBuilder("Error para crear respuesta",e.getMessage());
+                    }
+                }else{
+                    throw new ExceptionBuilder("Error para crear pregunta","Error en pregunta");
                 }
-
+            }else{
+                throw new ExceptionBuilder("Error para crear pregunta","Error en encuesta");
             }
-
         }catch (Exception e){
-            throw new ExceptionBuilder("Error para crear respuesta",e.getMessage());
+            throw new ExceptionBuilder("No se puede asignar respuesta",e.getMessage());
         }
         return dtoRespuesta;
     }
@@ -115,11 +124,11 @@ public class EncuestaService implements EncuestaServiceInterface{
             if (encuestaId != null){
                 EncuestaPreguntaDTO encuestaDTO = new EncuestaPreguntaDTO();
                 Optional<EncuestaEntity> findEncuestaObj = encuestaRepository.findById(id);
-                encuestaDTO.setPreguntas(preguntaRepository.getPreguntaId(id));
                 encuestaDTO.setTitulo(findEncuestaObj.get().getTitulo());
                 encuestaDTO.setId_encu(findEncuestaObj.get().getId_encu());
                 encuestaDTO.setDate(findEncuestaObj.get().getDate());
                 encuestaDTO.setId_encu(findEncuestaObj.get().getId_encu());
+                encuestaDTO.setPreguntas(preguntaRepository.getPreguntaId(id));
                 return encuestaDTO;
             }else {
                 throw new ExceptionBuilder("Not Found","Verifique id ingresado");

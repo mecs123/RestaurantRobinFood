@@ -1,7 +1,6 @@
 package com.encuesta.encuesta.controller;
 
 import com.encuesta.encuesta.Excepciones.ExceptionBuilder;
-import com.encuesta.encuesta.entity.PreguntaEntity;
 import com.encuesta.encuesta.model.request.EncuestaRequestModel;
 import com.encuesta.encuesta.model.request.PreguntaRequestModel;
 import com.encuesta.encuesta.model.request.RespuestaRequestModel;
@@ -13,7 +12,6 @@ import com.encuesta.encuesta.model.sharedDto.PreguntaDTO;
 import com.encuesta.encuesta.model.sharedDto.RespuestaDTO;
 import com.encuesta.encuesta.service.EncuestaServiceInterface;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,11 +39,9 @@ public class EncuestaController {
 
     @PostMapping("/respuesta")
     public RespuestaDTO createRespuesta(@RequestBody RespuestaRequestModel respuestaRequestModel) throws Exception {
-        RespuestaDTO dtoRespuesta = new RespuestaDTO();
-        BeanUtils.copyProperties(respuestaRequestModel,dtoRespuesta);
+        RespuestaDTO dtoRespuesta = modelMapper.map(respuestaRequestModel,RespuestaDTO.class);
         return encuestaServiceInterface.createRespuesta(dtoRespuesta);
     }
-
 
     @GetMapping(path = "/listar/{id}")
     public EncuestaRest listarEncuesta(@PathVariable("id") Long id) throws ExceptionBuilder {
@@ -57,7 +53,5 @@ public class EncuestaController {
             throw new  ExceptionBuilder(e.getMessage(),e.getMessage());
         }
     }
-
-
 
 }
