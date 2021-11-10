@@ -15,5 +15,4 @@ public class EncuestaDTO {
     private Long id_encu;
     private String titulo;
     private String date;
-    private List<PreguntaEntity> preguntas;
 }

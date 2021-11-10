@@ -13,10 +13,11 @@ import java.util.List;
 @Data
 @Entity(name = "encuesta")
 public class EncuestaEntity implements Serializable {
-    private static final long serialVersionUID = -6190117583555398351L;
-    @Column(name = "IdEncu", nullable = false)
+
+    private static final long serialVersionUID = -8620913105504542892L;
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "IdEncu", nullable = false)
     private Long id_encu;
     private String titulo;
     private String date;

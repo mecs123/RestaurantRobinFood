@@ -14,13 +14,13 @@ import java.util.List;
 @Entity(name = "pregunta")
 public class PreguntaEntity implements Serializable {
     private static final long serialVersionUID = 9085784276634477339L;
-    @Column(name = "IdPre", nullable = false)
+
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "IdPre", nullable = false)
     private Long idPregunta;
     private String titulo_pregunta;
     private String tipoPregunta;
-    private boolean tipoPreguntaUp;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE,CascadeType.DETACH,CascadeType.REFRESH})
     @JoinColumn(name = "fk_IdEncu")
