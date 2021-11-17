@@ -120,20 +120,16 @@ public class EncuestaService implements EncuestaServiceInterface{
     @Override
     public EncuestaPreguntaDTO getEcuestaPregunta(Long id) throws ExceptionBuilder {
         try {
-            EncuestaEntity encuestaId =encuestaRepository.getEncuestaId(id);
-            if (encuestaId != null){
-                EncuestaPreguntaDTO encuestaDTO = new EncuestaPreguntaDTO();
+            EncuestaPreguntaDTO encuestaPreguntaDTO = new EncuestaPreguntaDTO();
                 Optional<EncuestaEntity> findEncuestaObj = encuestaRepository.findById(id);
-                encuestaDTO.setTitulo(findEncuestaObj.get().getTitulo());
-                encuestaDTO.setId_encu(findEncuestaObj.get().getId_encu());
-                encuestaDTO.setDate(findEncuestaObj.get().getDate());
-                encuestaDTO.setId_encu(findEncuestaObj.get().getId_encu());
-                encuestaDTO.setPreguntas(preguntaRepository.getPreguntaId(id));
-                return encuestaDTO;
-            }else {
-                throw new ExceptionBuilder("Not Found","Verifique id ingresado");
-            }
-
+                if (findEncuestaObj.isPresent()){
+                    encuestaPreguntaDTO.setTitulo(findEncuestaObj.get().getTitulo());
+                    encuestaPreguntaDTO.setId_encu(findEncuestaObj.get().getId_encu());
+                    encuestaPreguntaDTO.setDate(findEncuestaObj.get().getDate());
+                    encuestaPreguntaDTO.setId_encu(findEncuestaObj.get().getId_encu());
+                    encuestaPreguntaDTO.setPreguntas(preguntaRepository.getPreguntaId(id));
+                }
+            return encuestaPreguntaDTO;
         } catch (HttpServerErrorException h){
             throw new ExceptionBuilder("500", h.getMessage());
         } catch (IllegalArgumentException i){
@@ -141,6 +137,7 @@ public class EncuestaService implements EncuestaServiceInterface{
         } catch (Exception e){
             throw new ExceptionBuilder("Error para listar la encuesta",e.getMessage());
         }
+
     }
 
     @Override

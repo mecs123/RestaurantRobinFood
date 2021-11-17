@@ -32,26 +32,22 @@ public class EncuestaController {
     }
 
     @PostMapping(path = "/CreatePregunta")
-    public PreguntaResponse createPregunta(@RequestBody PreguntaRequestModel preguntaRequestModel) throws Exception {
+    public PreguntaResponse createPregunta(@RequestBody PreguntaRequestModel preguntaRequestModel) throws ExceptionBuilder {
         PreguntaDTO dtoPregunta = modelMapper.map(preguntaRequestModel,PreguntaDTO.class);
         return encuestaServiceInterface.createPregunta(dtoPregunta);
     }
 
     @PostMapping("/respuesta")
-    public RespuestaDTO createRespuesta(@RequestBody RespuestaRequestModel respuestaRequestModel) throws Exception {
+    public RespuestaDTO createRespuesta(@RequestBody RespuestaRequestModel respuestaRequestModel) throws ExceptionBuilder {
         RespuestaDTO dtoRespuesta = modelMapper.map(respuestaRequestModel,RespuestaDTO.class);
         return encuestaServiceInterface.createRespuesta(dtoRespuesta);
     }
 
     @GetMapping(path = "/listar/{id}")
-    public EncuestaRest listarEncuesta(@PathVariable("id") Long id) throws ExceptionBuilder {
-        try {
+    public EncuestaRest listarEncuesta(@PathVariable("id") Long id) throws Exception {
             EncuestaPreguntaDTO encuestaDTO = encuestaServiceInterface.getEcuestaPregunta(id);
             EncuestaRest encuestaRest = modelMapper.map(encuestaDTO,EncuestaRest.class);
            return encuestaRest;
-        } catch (Exception e) {
-            throw new  ExceptionBuilder(e.getMessage(),e.getMessage());
-        }
     }
 
 }
